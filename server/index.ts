@@ -1,4 +1,5 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import type { Request, Response } from "express";
 import { google } from "googleapis";
 import cors from "cors";
 import morgan from "morgan";
@@ -8,7 +9,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Initialize the OAuth2 client
 const oauth2Client = new google.auth.OAuth2(
@@ -24,7 +25,6 @@ app.use(express.json());
 
 // --- ROUTES ---
 
-// Basic Health Check
 app.get("/", (req: Request, res: Response) => {
   res.send("Music Curator API is running...");
 });
@@ -61,6 +61,7 @@ app.get("/auth/google/callback", async (req: Request, res: Response) => {
     oauth2Client.setCredentials(tokens);
 
     // For now, log the tokens to ensure they are being received
+    // Adding MongoDB later
     console.log("Successfully authenticated!");
     console.log("Access Token:", tokens.access_token);
 
