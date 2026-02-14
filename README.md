@@ -34,4 +34,6 @@ This repository contains my work for the **Project and Portfolio III** class I'm
 
 ## Links 🔗
 
-> Coming soon 
+http://localhost:5001/auth/google - Google Auth page to chose account to log in with 
+
+http://localhost:5001/youtube/liked-videos - Displays 10 liked YouTube videos with music category(Returns as JSON data for now) 
