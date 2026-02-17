@@ -39,6 +39,8 @@ app.get("/auth/google", (req: Request, res: Response) => {
   const scopes = [
     "https://www.googleapis.com/auth/youtube.readonly",
     "https://www.googleapis.com/auth/youtube.force-ssl",
+    "email",
+    "profile",
   ];
   const url = oauth2Client.generateAuthUrl({
     access_type: "offline",
