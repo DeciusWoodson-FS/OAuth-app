@@ -1,8 +1,8 @@
 # Google OAuth app
 
-This repository contains my work for the **Project and Portfolio III** class I'm taking at **Full Sail University**. The objective is to create Full-Stack Application that properly implements Google OAuth, passport will not be used in this application. 
+This repository contains my work for the **Project and Portfolio III** class I'm taking at **Full Sail University**. The objective is to create Full-Stack Application that properly implements Google OAuth, passport will not be used in this application.
 
-> Both this repo and this project are a work in progress and are subject to change. 
+> Both this repo and this project are a work in progress and are subject to change.
 
 ---
 
@@ -20,9 +20,9 @@ This repository contains my work for the **Project and Portfolio III** class I'm
 
 ## Prerequisites ⚠️
 
-- Node.js 
+- Node.js
 - npm
-- Modern Web Browser 
+- Modern Web Browser
 - [Google developer account](https://support.google.com/cloud/answer/15544987?hl=en)
 
 ---
@@ -35,6 +35,8 @@ This repository contains my work for the **Project and Portfolio III** class I'm
 
 ## Links 🔗
 
-http://localhost:5001/auth/google - Google Auth page to chose account to log in with 
+http://localhost:5001/auth/google - Google Auth page to chose account to log in with
 
-http://localhost:5001/youtube/liked-videos - Displays 10 liked YouTube videos with music category(Returns as JSON data for now) 
+http://localhost:5001/youtube/liked-videos - Displays 10 liked YouTube videos with music category(Returns as JSON data for now)
+
+http://localhost:5001/youtube/discover-new - Displays new songs based off YouTube videos liked in music category
