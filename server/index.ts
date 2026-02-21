@@ -71,7 +71,7 @@ app.get("/auth/google/callback", async (req: Request, res: Response) => {
       },
       { upsert: true, new: true }
     );
-    res.send("Authentication successful! Data saved to database.");
+    res.redirect("http://localhost:5173");
   } catch (error) {
     res.status(500).send("Authentication failed.");
   }
@@ -105,7 +105,7 @@ app.get(
   }
 );
 
-// Discover New Songs(Playlist Logic)
+// Discover New Songs (Playlist Logic)
 app.get(
   "/youtube/discover-new",
   checkAuth,
@@ -114,35 +114,89 @@ app.get(
       const auth = (req as any).ytAuth;
       const youtube = google.youtube({ version: "v3", auth });
 
-      //See what has been liked recently
+      // Pull the last 10 liked videos
       const likedRes = await youtube.playlistItems.list({
         part: ["snippet"],
         playlistId: "LL",
-        maxResults: 5,
-      });
-      const seedTitles =
-        likedRes.data.items?.map((item) => item.snippet?.title) || [];
-
-      // Use those likes to find new stuff
-      const searchRes = await youtube.search.list({
-        part: ["snippet"],
-        q: `${seedTitles[0]} official audio recommendations`,
-        type: ["video"],
-        videoCategoryId: "10",
         maxResults: 10,
       });
 
-      const suggestions = searchRes.data.items?.map((video) => ({
-        title: video.snippet?.title,
-        videoId: video.id?.videoId,
-        thumbnail: video.snippet?.thumbnails?.high?.url,
-      }));
+      const seedTitles =
+        likedRes.data.items?.map((item) => item.snippet?.title || "") || [];
+
+      // Extract JUST the Artist/Genre, discard the song name
+      const extractArtist = (title: string) => {
+        // YouTube music is usually formatted as "Artist - Song Title"
+        let artist = title.split("-")[0];
+        return artist
+          .replace(/#\w+/g, "")
+          .replace(/[\p{Emoji}]/gu, "")
+          .replace(/\|.*/g, "")
+          .replace(/\(Official.*/gi, "")
+          .replace(/\[Official.*/gi, "")
+          .trim();
+      };
+
+      // Clean artists and grab the top 2 distinct ones to base the mix on
+      const artists = seedTitles.map(extractArtist).filter((t) => t.length > 2);
+      const targetArtists = Array.from(new Set(artists)).slice(0, 2);
+
+      // Search for broader mixes instead of the specific song
+      const searchPromises = targetArtists.map((artist) =>
+        youtube.search.list({
+          part: ["snippet"],
+          q: `${artist} playlist OR similar artists mix`,
+          type: ["video"],
+          videoCategoryId: "10",
+          maxResults: 15,
+        })
+      );
+
+      const searchResults = await Promise.all(searchPromises);
+
+      // Flatten the results
+      let suggestions = searchResults.flatMap(
+        (result) =>
+          result.data.items?.map((video) => ({
+            title: video.snippet?.title || "",
+            videoId: video.id?.videoId || "",
+            thumbnail: video.snippet?.thumbnails?.high?.url || "",
+          })) || []
+      );
+
+      // Filter out remixes or live versions of liked songs
+      suggestions = suggestions.filter((suggestedVideo) => {
+        const suggestedLower = suggestedVideo.title.toLowerCase();
+
+        const isTooSimilar = seedTitles.some((likedTitle) => {
+          // Extract just the "Song Name" from liked list
+          const songName = likedTitle.split("-")[1]?.trim().toLowerCase();
+
+          // If the suggested video contains that exact song name, reject it.
+          if (
+            songName &&
+            songName.length > 3 &&
+            suggestedLower.includes(songName)
+          ) {
+            return true;
+          }
+          return false;
+        });
+
+        return !isTooSimilar; // Keep it if it's NOT too similar
+      });
+
+      // Remove absolute duplicates and slice back down to 10
+      const uniqueSuggestions = Array.from(
+        new Map(suggestions.map((item) => [item.videoId, item])).values()
+      ).slice(0, 10);
 
       res.json({
-        basedOn: seedTitles[0],
-        recommendations: suggestions,
+        basedOn: targetArtists.join(" & "),
+        recommendations: uniqueSuggestions,
       });
     } catch (error: any) {
+      console.error("Discovery Error:", error.message);
       res.status(500).send("Failed to generate recommendations.");
     }
   }
