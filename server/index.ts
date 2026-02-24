@@ -71,7 +71,9 @@ app.get("/auth/google/callback", async (req: Request, res: Response) => {
       },
       { upsert: true, new: true }
     );
-    res.redirect("http://localhost:5173");
+
+    const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+    res.redirect(CLIENT_URL);
   } catch (error) {
     res.status(500).send("Authentication failed.");
   }
@@ -202,6 +204,8 @@ app.get(
   }
 );
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+export default app;

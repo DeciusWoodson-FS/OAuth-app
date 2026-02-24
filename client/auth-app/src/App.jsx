@@ -10,7 +10,7 @@ export default function App() {
   const [playlistUrl, setPlaylistUrl] = useState("");
 
   const handleLogin = () => {
-    window.location.href = "http://localhost:5001/auth/google";
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
   };
 
   const discoverMusic = async () => {
@@ -18,7 +18,7 @@ export default function App() {
     setPlaylistUrl("");
     try {
       const response = await fetch(
-        "http://localhost:5001/youtube/discover-new"
+        `${import.meta.env.VITE_API_URL}/youtube/discover-new`
       );
       if (!response.ok) throw new Error("Failed to fetch");
 
@@ -38,8 +38,9 @@ export default function App() {
     setLoading(true);
     try {
       const videoIds = recommendations.map((video) => video.videoId);
+
       const response = await fetch(
-        "http://localhost:5001/youtube/create-playlist",
+        `${import.meta.env.VITE_API_URL}/youtube/create-playlist`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
