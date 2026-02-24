@@ -15,6 +15,7 @@ This repository contains my work for the **Project and Portfolio III** class I'm
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-%2338B2AC.svg?logo=tailwind-css&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-6DA55F?logo=node.js&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?logo=mongodb&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-%23000000.svg?logo=vercel&logoColor=white)
 
 ---
 
