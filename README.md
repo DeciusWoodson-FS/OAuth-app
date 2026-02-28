@@ -6,6 +6,16 @@ This repository contains my work for the **Project and Portfolio III** class I'm
 
 ---
 
+## Features ✨
+
+- **Custom OAuth 2.0 Flow:** Secure Google Sign-In implementation handling token exchange, refresh tokens, and session persistence in MongoDB.
+- **YouTube API Integration:** Dynamically fetches and analyzes the user's `LL` (Liked List) playlist.
+- **Algorithmic Discovery:** Custom backend logic that cleans video titles, extracts artist names, and queries YouTube for mathematically similar recommendations while filtering out duplicates.
+- **One-Click Export:** Automatically generates a new private playlist on the user's channel and populates it with the discovered tracks via POST requests.
+- **Modern UI:** Responsive, dark-themed interface built with React, Vite, and Tailwind CSS.
+
+---
+
 ## Technologies 💻
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)
@@ -30,14 +40,62 @@ This repository contains my work for the **Project and Portfolio III** class I'm
 
 ## Getting started 🚀
 
-> Coming soon
+### 1. Clone the repository
+\`\`\`bash
+git clone <your-repo-url>
+cd oauth-app
+\`\`\`
+
+### 2. Install Dependencies
+You will need to install the dependencies for both the client and the server.
+\`\`\`bash
+# Install Server dependencies
+cd server
+npm install
+
+# Install Client dependencies
+cd ../client/auth-app
+npm install
+\`\`\`
+
+### 3. Environment Variables
+Create a `.env` file in the `server` directory and add the following keys:
+\`\`\`env
+PORT=5001
+MONGO_URI=your_mongodb_connection_string
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_REDIRECT_URI=http://localhost:5001/auth/google/callback
+CLIENT_URL=http://localhost:5173
+\`\`\`
+
+Create a `.env` file in the `client/auth-app` directory:
+\`\`\`env
+VITE_API_URL=http://localhost:5001
+\`\`\`
+
+### 4. Run the Application
+Open two separate terminal windows.
+
+**Terminal 1 (Backend):**
+\`\`\`bash
+cd server
+npm run dev
+\`\`\`
+
+**Terminal 2 (Frontend):**
+\`\`\`bash
+cd client/auth-app
+npm run dev
+\`\`\`
+The application will be running at `http://localhost:5173`.
 
 ---
+### Live Deployment
+- **Live Site:** http://o-auth-app-544m.vercel.app
 
-## Links 🔗
-
-http://localhost:5001/auth/google - Google Auth page to chose account to log in with
-
-http://localhost:5001/youtube/liked-videos - Displays 10 liked YouTube videos with music category(Returns as JSON data for now)
-
-http://localhost:5001/youtube/discover-new - Displays new songs based off YouTube videos liked in music category
+### Local API Endpoints
+- `GET /auth/google` - Initiates the Google OAuth consent screen.
+- `GET /youtube/liked-videos` - Returns the user's 10 most recently liked YouTube videos.
+- `GET /youtube/discover-new` - Analyzes liked videos and returns an array of new song recommendations.
+- `POST /youtube/create-playlist` - Creates a new private playlist on the user's account and populates it with the recommended video IDs.
